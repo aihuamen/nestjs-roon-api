@@ -1,16 +1,17 @@
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
-import { RoonService } from './providers/roon.service';
-import { ROON_CONFIG } from './roon.constant';
-import { RoonController } from './roon.controller';
+import { ROON_CONFIG } from '../roon.constant';
+import { RoonGateway } from './roon.gateway';
+import { RoonService } from './roon.service';
 
-describe('RoonController', () => {
-  let controller: RoonController;
+describe('RoonGateway', () => {
+  let gateway: RoonGateway;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       imports: [EventEmitterModule.forRoot()],
       providers: [
+        RoonGateway,
         RoonService,
         {
           provide: ROON_CONFIG,
@@ -24,13 +25,12 @@ describe('RoonController', () => {
           },
         },
       ],
-      controllers: [RoonController],
     }).compile();
 
-    controller = module.get(RoonController);
+    gateway = module.get(RoonGateway);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(gateway).toBeDefined();
   });
 });

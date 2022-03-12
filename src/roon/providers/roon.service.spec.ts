@@ -1,11 +1,10 @@
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
-import { RoonService } from './providers/roon.service';
-import { ROON_CONFIG } from './roon.constant';
-import { RoonController } from './roon.controller';
+import { ROON_CONFIG } from '../roon.constant';
+import { RoonService } from './roon.service';
 
-describe('RoonController', () => {
-  let controller: RoonController;
+describe('RoonService', () => {
+  let service: RoonService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
@@ -24,13 +23,26 @@ describe('RoonController', () => {
           },
         },
       ],
-      controllers: [RoonController],
     }).compile();
 
-    controller = module.get(RoonController);
+    service = module.get(RoonService);
+  });
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
+  });
+
+  it('should be able to call play', async () => {
+    const playFn = jest.spyOn(service, 'play');
+    const promisifyTransport = jest
+      .spyOn(RoonService.prototype as any, 'promisifyTransportMethod')
+      .mockImplementation(() => Promise.resolve());
+    await service.play();
+    expect(playFn).toBeCalled();
+    expect(promisifyTransport).toBeCalled();
   });
 });

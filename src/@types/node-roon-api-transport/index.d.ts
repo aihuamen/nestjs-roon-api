@@ -165,6 +165,8 @@ declare module 'node-roon-api-transport' {
     | 'next';
   export type LoopType = 'loop' | 'loop_one' | 'disabled' | 'next';
 
+  export type ZoneState = 'playing' | 'paused' | 'loading' | 'stopped';
+
   export type ResultCallBack = (m: false | string) => void;
 
   export interface RoonData {
@@ -181,7 +183,7 @@ declare module 'node-roon-api-transport' {
     zone_id: string;
     display_name: string;
     outputs: Output[];
-    state: 'playing' | 'paused' | 'loading' | 'stopped';
+    state: ZoneState;
     is_next_allowed: boolean;
     is_previous_allowed: boolean;
     is_pause_allowed: boolean;

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /// <reference types="node"/>
 
 declare module 'node-roon-api-image' {
@@ -9,7 +10,8 @@ declare module 'node-roon-api-image' {
    * @param {Core} core - The Core providing the service
    */
   export default class RoonApiImage {
-    constructor(core: Core);
+    private static services: [{ name: string }];
+    constructor(private core: Core);
 
     get_image(image_key: string, cb: ImageResultCallback): void;
     get_image(

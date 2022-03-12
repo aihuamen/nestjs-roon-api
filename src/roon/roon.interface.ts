@@ -1,5 +1,5 @@
 import { RoonApiConstructor } from 'node-roon-api';
-import { MusicStatus } from 'node-roon-api-transport';
+import { MusicStatus, ZoneState } from 'node-roon-api-transport';
 
 export type RoonModuleConfig = Pick<
   RoonApiConstructor,
@@ -27,4 +27,5 @@ export interface CurrentSong extends MusicStatus {
   title: string;
   artist: string;
   album: string;
+  status?: ZoneState;
 }

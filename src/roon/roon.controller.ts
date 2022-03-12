@@ -11,23 +11,23 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { SongDto } from '../common';
-import { ImageResult } from '../common/interfaces/roon.interface';
-import { RoonService } from './roon.service';
+import { SongDto } from './roon.dto';
+import { ImageResult } from './roon.interface';
+import { RoonService } from './providers/roon.service';
 
 @Controller('roon')
 export class RoonController {
   constructor(private roonService: RoonService) {}
 
   @Put('play')
-  playMusic() {
-    this.roonService.play();
+  async playMusic() {
+    await this.roonService.play();
     return 'play';
   }
 
   @Put('pause')
-  pauseMusic() {
-    this.roonService.pause();
+  async pauseMusic() {
+    await this.roonService.pause();
     return 'pause';
   }
 

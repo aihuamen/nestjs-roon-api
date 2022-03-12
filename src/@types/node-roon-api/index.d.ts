@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /// <reference types="node"/>
 
 declare module 'node-roon-api' {
@@ -6,7 +7,7 @@ declare module 'node-roon-api' {
   import type RoonApiSettings from 'node-roon-api-settings';
   import type RoonApiBrowse from 'node-roon-api-browse';
   import type RoonApiImage from 'node-roon-api-image';
-
+  export * from './moo';
   export default class RoonApi {
     constructor(o: RoonApiConstructor);
     /**
@@ -18,37 +19,37 @@ declare module 'node-roon-api' {
      * @param {object[]} [services.optional_services] - A list of services which the Roon Core may provide.
      * @param {object[]} [services.provided_services] - A list of services which this extension provides to the Roon Core.
      */
-    init_services: (o?: RoonInitServices) => void;
+    init_services(o?: RoonInitServices): void;
 
     /**
      * Begin the discovery process to find/connect to a Roon Core.
      */
-    start_discovery: () => void;
+    start_discovery(): void;
+
+    /**
+     * If not using Roon discovery, call this to connect to the Core via a websocket.
+     *
+     * @this RoonApi
+     * @param {object}          options
+     * @param {string}          options.host - hostname or ip to connect to
+     * @param {number}          options.port - port to connect to
+     * @param {RoonApi~onclose} [options.onclose] - Called once when connect to host is lost
+     */
+    ws_connect(opts: WSOption): void;
 
     /**
      * Save a key value pair in the configuration data store.
      * @param {string} key
      * @param {object} value
      */
-    save_config: (key: string, value: Record<string, any>) => void;
+    save_config(key: string, value: Record<string, any>): void;
 
     /**
      * Load a key value pair in the configuration data store.
      * @param {string} key
      * @return {object} value
      */
-    load_config: <T extends Record<string, any> = {}>(key: string) => T;
-  }
-
-  export class Moo {
-    transport: any;
-    reqid: number;
-    subkey: number;
-    requests: Record<string, unknown>;
-    mooid: number;
-    logger: any;
-
-    constructor(transport: any);
+    load_config<T extends Record<string, any>>(key: string): ?T;
   }
 
   export interface MooMessage {
@@ -99,6 +100,12 @@ declare module 'node-roon-api' {
     display_name: string;
     display_version: string;
     services: RoonService;
+  }
+
+  export interface WSOption {
+    host: string;
+    port: number;
+    onclose: () => void;
   }
 
   export type RoonRequiredServices = ThisType<

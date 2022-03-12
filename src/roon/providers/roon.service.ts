@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -17,13 +18,14 @@ import RoonApiTransport, {
   Zone,
 } from 'node-roon-api-transport';
 import { promisify } from 'util';
-import { IMAGE_OPTION_DEFAULT, ROON_CONFIG } from './roon.constant';
+import { IMAGE_OPTION_DEFAULT, ROON_CONFIG } from '../roon.constant';
 import {
   CurrentSong,
   ImageResult,
   RoonModuleConfig,
   SettingConfig,
-} from '../common';
+} from '../roon.interface';
+import { AnyFunction } from '../../shared/interfaces';
 
 @Injectable()
 export class RoonService implements OnApplicationBootstrap {
@@ -44,7 +46,7 @@ export class RoonService implements OnApplicationBootstrap {
     return this.zones?.find((z) => z.display_name === this.setting!.zone.name);
   }
 
-  private setCurrentZoneState(zonesChanged: Zone) {
+  private setCurrentZoneState(zonesChanged: Zone): void {
     this.zones?.forEach((z) => {
       if (z.zone_id === zonesChanged.zone_id) {
         z.state = zonesChanged.state;
@@ -91,33 +93,68 @@ export class RoonService implements OnApplicationBootstrap {
   setStatus = (status: string): void =>
     this.statusService.set_status(status, false);
 
-  play = (): void =>
-    this.transportService?.control(this.currentOutput!, 'play');
+  play = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'play',
+    );
 
-  pause = (): void =>
-    this.transportService?.control(this.currentOutput!, 'pause');
+  pause = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'pause',
+    );
 
-  togglePlayPause = (): void =>
-    this.transportService?.control(this.currentOutput!, 'playpause');
+  togglePlayPause = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'playpause',
+    );
 
-  stop = (): void =>
-    this.transportService?.control(this.currentOutput!, 'stop');
+  stop = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'stop',
+    );
 
-  previous = (): void =>
-    this.transportService?.control(this.currentOutput!, 'previous');
+  previous = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'previous',
+    );
 
-  next = (): void =>
-    this.transportService?.control(this.currentOutput!, 'next');
+  next = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.control,
+      this.currentOutput!,
+      'next',
+    );
 
-  mute = (): void => this.transportService?.mute(this.currentOutput!, 'mute');
+  mute = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.mute,
+      this.currentOutput!,
+      'mute',
+    );
 
-  unmute = (): void =>
-    this.transportService?.mute(this.currentOutput!, 'unmute');
+  unmute = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.mute,
+      this.currentOutput!,
+      'unmute',
+    );
 
-  shuffle = (): void =>
-    this.transportService?.change_settings(this.currentOutput!, {
-      shuffle: true,
-    });
+  shuffle = (): Promise<void> =>
+    this.promisifyTransportMethod(
+      this.transportService?.change_settings,
+      this.currentOutput!,
+      { shuffle: true },
+    );
 
   doBrowse = (item_key: string): Promise<BrowseResult> =>
     promisify(this.browseService!.browse).bind(this.browseService)({
@@ -139,7 +176,7 @@ export class RoonService implements OnApplicationBootstrap {
     image_key: string,
     options: ImageOption = IMAGE_OPTION_DEFAULT,
   ): Promise<ImageResult> {
-    return new Promise<ImageResult>((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.imageService!.get_image(image_key, options, (err, type, image) => {
         if (err) {
           return reject(err);
@@ -249,11 +286,28 @@ export class RoonService implements OnApplicationBootstrap {
       title: line1,
       artist: line2,
       album: line3,
+      status: this.currentZone?.state,
     };
   }
 
-  private emitEventFromState() {
+  private emitEventFromState(): void {
     const state = this.currentZone?.state;
     this.eventEmitter.emit(`music.${state}`, this.currentSong);
+  }
+
+  private promisifyTransportMethod<
+    Args extends any[],
+    Returned extends unknown,
+  >(fn?: AnyFunction<Args, Returned>, ...args: Args): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!fn) return reject('Transport service have not initiated yet!');
+      const yee = [args[0], args[1]] as const;
+      fn.bind(this.transportService)(...yee, (res: false | string) => {
+        if (!res) {
+          resolve();
+        }
+        return reject(res);
+      });
+    });
   }
 }
