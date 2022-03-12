@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CurrentSong } from '../common';
+import { CurrentSong } from '../roon/roon.interface';
 import { Client } from 'discord-rpc';
 import { DISCORD_CLIENT_ID } from './discord.constant';
 
