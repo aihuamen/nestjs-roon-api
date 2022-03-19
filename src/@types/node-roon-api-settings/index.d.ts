@@ -30,9 +30,45 @@ declare module 'node-roon-api-settings' {
     [k: string]: any;
   }
 
-  export interface SettingLayout {
-    type: string;
+  export interface LabelLayout {
+    type: 'label';
     title: string;
-    setting?: string;
   }
+
+  export interface StringLayout {
+    type: 'string';
+    title: string;
+    setting: string;
+  }
+
+  export interface DropdownLayout {
+    type: 'dropdown';
+    title: string;
+    values: DropdownLayoutValue[];
+    setting: string;
+  }
+
+  export interface DropdownLayoutValue {
+    title: string;
+    value: any;
+  }
+
+  export interface IntegerLayout {
+    type: 'integer';
+    title: string;
+    setting: string;
+  }
+
+  export interface ZoneLayout {
+    type: 'zone';
+    title: string;
+    setting: string;
+  }
+
+  export type SettingLayout =
+    | LabelLayout
+    | StringLayout
+    | IntegerLayout
+    | DropdownLayout
+    | ZoneLayout;
 }

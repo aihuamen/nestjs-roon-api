@@ -13,13 +13,12 @@ declare module 'node-roon-api' {
     /**
      * Initializes the services you require and that you provide.
      *
-     * @this RoonApi
      * @param {object} services - Information about your extension. Used by Roon to display to the end user what is trying to access Roon.
      * @param {object[]} [services.required_services] - A list of services which the Roon Core must provide.
      * @param {object[]} [services.optional_services] - A list of services which the Roon Core may provide.
      * @param {object[]} [services.provided_services] - A list of services which this extension provides to the Roon Core.
      */
-    init_services(o?: RoonInitServices): void;
+    init_services(services?: RoonInitServices): void;
 
     /**
      * Begin the discovery process to find/connect to a Roon Core.
@@ -29,7 +28,6 @@ declare module 'node-roon-api' {
     /**
      * If not using Roon discovery, call this to connect to the Core via a websocket.
      *
-     * @this RoonApi
      * @param {object}          options
      * @param {string}          options.host - hostname or ip to connect to
      * @param {number}          options.port - port to connect to

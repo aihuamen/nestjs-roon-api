@@ -29,3 +29,9 @@ export interface CurrentSong extends MusicStatus {
   album: string;
   status?: ZoneState;
 }
+
+export interface PlayerSetting {
+  mute?: boolean;
+  shuffle: boolean;
+  volume?: number;
+}

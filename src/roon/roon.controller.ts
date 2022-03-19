@@ -5,6 +5,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Put,
   Query,
   Res,
@@ -32,21 +33,45 @@ export class RoonController {
   }
 
   @Put('playpause')
-  toggleMusic() {
-    this.roonService.togglePlayPause();
+  async toggleMusic() {
+    await this.roonService.togglePlayPause();
     return 'play/pause';
   }
 
   @Put('mute')
-  muteMusic() {
-    this.roonService.mute();
+  async muteMusic() {
+    await this.roonService.mute();
     return 'mute';
   }
 
   @Put('unmute')
-  unmuteMusic() {
-    this.roonService.unmute();
+  async unmuteMusic() {
+    await this.roonService.unmute();
     return 'unmute';
+  }
+
+  @Put('shuffle')
+  async shuffleList() {
+    await this.roonService.shuffle();
+    return 'shuffle';
+  }
+
+  @Put('unshuffle')
+  async unshuffleList() {
+    await this.roonService.unshuffle();
+    return 'unshuffle';
+  }
+
+  @Put('toggleShuffle')
+  async toggleShuffleList() {
+    await this.roonService.toggleShuffle();
+    return 'toggleShuffle';
+  }
+
+  @Put('volume/:vol')
+  async changeVolume(@Param('vol', ParseIntPipe) vol: number) {
+    await this.roonService.changeVolume(vol);
+    return `volume: ${vol}`;
   }
 
   @Put('status')
@@ -100,5 +125,10 @@ export class RoonController {
     const { type, image } = result;
     res.contentType(type);
     res.end(image, 'binary');
+  }
+
+  @Get('setting')
+  getSetting() {
+    return this.roonService.playerSetting;
   }
 }

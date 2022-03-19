@@ -203,7 +203,7 @@ declare module 'node-roon-api-transport' {
     zone_id: string;
     can_group_with_output_ids: string[];
     display_name: string;
-    volume: {
+    volume?: {
       type: 'number' | 'db' | 'incremental';
       min: number;
       max: number;

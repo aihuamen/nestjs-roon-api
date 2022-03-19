@@ -1,10 +1,12 @@
 import { Exclude, Transform } from 'class-transformer';
+import { ZoneState } from 'node-roon-api-transport';
 import { CurrentSong } from './roon.interface';
 
 export class SongDto {
   title: string;
   artist: string;
   album: string;
+  status: ZoneState;
 
   @Transform(
     ({ value }) =>
