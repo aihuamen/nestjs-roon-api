@@ -15,6 +15,7 @@ import { DiscordModule } from './discord/discord.module';
       publisher: 'Yama K',
       email: 'yama@email.com',
       website: 'https://github.com/aihuamen/Roon_thingy',
+      log_level: 'none',
     }),
     EventEmitterModule.forRoot({
       wildcard: true,

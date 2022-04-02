@@ -21,18 +21,12 @@ describe('Roon Feature', () => {
     let response: request.Response;
 
     await agent.put('/roon/play');
-    // await new Promise((r) => {
-    //   setTimeout(r, 2000);
-    // });
     response = await agent.get('/roon/current/song');
 
     expect(response.ok).toBe(true);
     expect(response.body.status).toBe('playing');
 
     await agent.put('/roon/pause');
-    // await new Promise((r) => {
-    //   setTimeout(r, 2000);
-    // });
     response = await agent.get('/roon/current/song');
 
     expect(response.ok).toBe(true);

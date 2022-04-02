@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import chalk from 'chalk';
 import RoonApi, { Core, MooMessage } from 'node-roon-api';
@@ -145,6 +150,10 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async mute(): Promise<void> {
+    if (this.playerSetting.mute === undefined) {
+      throw new BadRequestException('This output is on exclusive mode');
+    }
+
     if (this.playerSetting.mute) return Promise.resolve();
     await this.promisifyTransportMethod(
       this.transportService?.mute,
@@ -155,6 +164,10 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async unmute(): Promise<void> {
+    if (this.playerSetting.mute === undefined) {
+      throw new BadRequestException('This output is on exclusive mode');
+    }
+
     if (!this.playerSetting.mute) return Promise.resolve();
     await this.promisifyTransportMethod(
       this.transportService?.mute,
@@ -165,6 +178,9 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async toggleMute(): Promise<void> {
+    if (!('mute' in this.playerSetting)) {
+      throw new BadRequestException('This output is on exclusive mode');
+    }
     await this.promisifyTransportMethod(
       this.transportService?.change_settings,
       this.currentOutput!,
@@ -203,6 +219,9 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async changeVolume(vol: number): Promise<void> {
+    if (!this.playerSetting.volume) {
+      throw new BadRequestException('This output is on exclusive mode!');
+    }
     await this.promisifyTransportMethod(
       this.transportService?.change_volume,
       this.currentOutput!,
@@ -376,23 +395,20 @@ export class RoonService implements OnApplicationBootstrap {
     Args extends any[],
     Returned extends unknown,
   >(fn?: AnyFunction<Args, Returned>, ...args: Args): Promise<void> {
+    if (!fn) {
+      return Promise.reject(
+        'This method is undefined or transport service has not initiated yet!',
+      );
+    }
+    const isTransportMethod = Object.values(
+      Object.getPrototypeOf(this.transportService),
+    ).some((m) => m === fn);
+
+    if (!isTransportMethod) {
+      return Promise.reject('This is not transport service method!');
+    }
     this.promiseDefer = new PromiseDefer();
     return new Promise((resolve, reject) => {
-      if (!fn) {
-        this.promiseDefer.reject();
-        return reject(
-          'This method is undefined or transport service has not initiated yet!',
-        );
-      }
-      const isTransportMethod = Object.values(
-        Object.getPrototypeOf(this.transportService),
-      ).some((m) => m === fn);
-
-      if (!isTransportMethod) {
-        this.promiseDefer.reject();
-        return reject('This is not transport service method!');
-      }
-
       const argsNoCB = args.slice(0, fn.length - 1);
       fn.bind(this.transportService)(...argsNoCB, (res: false | string) => {
         if (!res) {

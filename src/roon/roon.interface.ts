@@ -9,6 +9,7 @@ export type RoonModuleConfig = Pick<
   | 'email'
   | 'publisher'
   | 'website'
+  | 'log_level'
 >;
 
 export interface SettingConfig {
