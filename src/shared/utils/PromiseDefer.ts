@@ -1,7 +1,7 @@
 type Resolvable<R> = R | PromiseLike<R>;
 
 export interface IPromiseDefer<R> {
-  resolve: (thenableOrResult?: Resolvable<R>) => void;
+  resolve: (thenableOrResult: Resolvable<R>) => void;
   reject: (error?: any) => void;
   promise: PromiseLike<R>;
 }
@@ -14,7 +14,7 @@ export class PromiseDefer<R> implements IPromiseDefer<R> {
     });
   }
 
-  resolve: (thenableOrResult?: Resolvable<R>) => void;
-  reject: (error?: any) => void;
+  resolve!: (thenableOrResult: Resolvable<R>) => void;
+  reject!: (error?: any) => void;
   promise: PromiseLike<R>;
 }

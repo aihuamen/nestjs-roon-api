@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   Res,
+  StreamableFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -94,6 +95,9 @@ export class RoonController {
     if (!this.roonService.currentSong) {
       throw new BadRequestException('No current song available');
     }
+    if (!this.roonService.currentSong.image_key) {
+      throw new BadRequestException('This song does not have image!');
+    }
     const { type, image } = await this.roonService.getImage(
       this.roonService.currentSong.image_key,
     );
@@ -124,7 +128,8 @@ export class RoonController {
     }
     const { type, image } = result;
     res.contentType(type);
-    res.end(image, 'binary');
+    return new StreamableFile(image);
+    // res.end(image, 'binary')
   }
 
   @Get('setting')

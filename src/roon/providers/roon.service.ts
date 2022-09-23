@@ -32,11 +32,12 @@ import {
 } from '../roon.interface';
 import { AnyFunction } from '../../shared/interfaces';
 import { PromiseDefer } from '../../shared/utils/PromiseDefer';
+import { FileService } from '../../file/file.service';
 
 @Injectable()
 export class RoonService implements OnApplicationBootstrap {
   private roon: RoonApi;
-  private core: Core;
+  private core!: Core;
   private statusService: RoonApiStatus;
   private transportService?: RoonApiTransport;
   private browseService?: RoonApiBrowse;
@@ -45,10 +46,10 @@ export class RoonService implements OnApplicationBootstrap {
   private zones?: Zone[];
   private setting?: SettingConfig;
 
-  private promiseDefer: PromiseDefer<void>;
+  private promiseDefer!: PromiseDefer<void>;
 
   public currentSong?: CurrentSong;
-  public playerSetting: PlayerSetting;
+  public playerSetting!: PlayerSetting;
 
   public get currentZone() {
     if (!this.setting) return undefined;
@@ -64,6 +65,7 @@ export class RoonService implements OnApplicationBootstrap {
 
   constructor(
     private readonly eventEmitter: EventEmitter2,
+    private readonly fileService: FileService,
     @Inject(ROON_CONFIG) config: RoonModuleConfig,
   ) {
     this.roon = new RoonApi({
@@ -347,6 +349,7 @@ export class RoonService implements OnApplicationBootstrap {
       if (this.promiseDefer) {
         this.promiseDefer.resolve();
       }
+      this.cacheImage();
     } else if (
       cmd === 'Changed' &&
       data.zones_seek_changed &&
@@ -410,6 +413,8 @@ export class RoonService implements OnApplicationBootstrap {
     this.promiseDefer = new PromiseDefer();
     return new Promise((resolve, reject) => {
       const argsNoCB = args.slice(0, fn.length - 1);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       fn.bind(this.transportService)(...argsNoCB, (res: false | string) => {
         if (!res) {
           resolve();
@@ -417,5 +422,19 @@ export class RoonService implements OnApplicationBootstrap {
         return reject(res);
       });
     });
+  }
+
+  private async cacheImage() {
+    const imageKey = this.currentSong!.image_key;
+    if (!imageKey) return;
+    const isExist = await this.fileService.checkImageExist(imageKey);
+    if (isExist) return;
+
+    const { type, image } = await this.getImage(imageKey);
+    await this.saveImage(imageKey, image, type);
+  }
+
+  private async saveImage(id: string, image: Buffer, type?: string) {
+    await this.fileService.saveImage(id, image, type);
   }
 }

@@ -1,5 +1,8 @@
 import { RoonApiConstructor } from 'node-roon-api';
-import { MusicStatus, ZoneState } from 'node-roon-api-transport';
+import RoonApiTransport, {
+  MusicStatus,
+  ZoneState,
+} from 'node-roon-api-transport';
 
 export type RoonModuleConfig = Pick<
   RoonApiConstructor,

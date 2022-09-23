@@ -237,7 +237,7 @@ declare module 'node-roon-api-transport' {
       line2: string;
       line3: string;
     };
-    image_key: string;
+    image_key?: string;
   }
 
   export interface ChangeSettingOption {

@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RoonModule } from './roon/roon.module';
 import { DiscordModule } from './discord/discord.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DiscordModule } from './discord/discord.module';
     }),
     DiscordModule,
     ConfigModule.forRoot(),
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
