@@ -1,7 +1,7 @@
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
-import { ROON_CONFIG } from '../roon.constant';
-import { RoonService } from './roon.service';
+import { ROON_CONFIG } from '../roon.constant.js';
+import { RoonService } from './roon.service.js';
 
 describe('RoonService', () => {
   let service: RoonService;

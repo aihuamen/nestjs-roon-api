@@ -13,9 +13,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { SongDto } from './roon.dto';
-import { ImageResult } from './roon.interface';
-import { RoonService } from './providers/roon.service';
+import { SongDto } from './roon.dto.js';
+import { ImageResult } from './roon.interface.js';
+import { RoonService } from './providers/roon.service.js';
 
 @Controller('roon')
 export class RoonController {

@@ -6,10 +6,10 @@ import {
 import { OnEvent } from '@nestjs/event-emitter';
 import { plainToClass } from 'class-transformer';
 import type { Server, Socket } from 'socket.io';
-import { SongDto } from '../roon.dto';
-import { GATEWAY_METADATA } from '../roon.constant';
-import { CurrentSong } from '../roon.interface';
-import { RoonService } from './roon.service';
+import { SongDto } from '../roon.dto.js';
+import { GATEWAY_METADATA } from '../roon.constant.js';
+import { CurrentSong } from '../roon.interface.js';
+import { RoonService } from './roon.service.js';
 
 @WebSocketGateway(GATEWAY_METADATA)
 export class RoonGateway implements OnGatewayConnection {

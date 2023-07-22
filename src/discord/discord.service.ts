@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
-import { CurrentSong } from '../roon/roon.interface';
 import { Client } from 'discord-rpc';
-import { DISCORD_CLIENT_ID } from './discord.constant';
+import { CurrentSong } from '../roon/roon.interface.js';
+import { DISCORD_CLIENT_ID } from './discord.constant.js';
 
 @Injectable()
 export class DiscordService
@@ -37,7 +37,7 @@ export class DiscordService
   }
 
   @OnEvent('music.playing')
-  private updateRichPresencePlay(currentSong: CurrentSong) {
+  async updateRichPresencePlay(currentSong: CurrentSong) {
     if (!this.isReady) return;
     const { title, artist, album, seek_position, length } = currentSong;
     const startTimestamp = Math.round(
@@ -45,7 +45,7 @@ export class DiscordService
     );
     const endTimestamp = Math.round(startTimestamp + length);
 
-    this.client.setActivity({
+    await this.client.setActivity({
       details: title.length < 2 ? `${title}  ` : title,
       state: `${
         artist.length <= 128 ? artist : artist.substring(0, 128)
@@ -60,11 +60,11 @@ export class DiscordService
   }
 
   @OnEvent('music.paused')
-  private updateRichPresencePause(currentSong: CurrentSong) {
+  async updateRichPresencePause(currentSong: CurrentSong) {
     if (!this.isReady) return;
     const { title, artist, album } = currentSong;
 
-    this.client.setActivity({
+    await this.client.setActivity({
       details: '[Paused] ' + title,
       state: `${
         artist.length <= 128 ? artist : artist.substring(0, 128)
@@ -77,10 +77,10 @@ export class DiscordService
   }
 
   @OnEvent('music.loading')
-  private updateRichPresenceLoad() {
+  async updateRichPresenceLoad() {
     if (!this.isReady) return;
 
-    this.client.setActivity({
+    await this.client.setActivity({
       details: 'Loading...',
       largeImageKey: 'roon-main',
       smallImageKey: 'roon-small',
@@ -90,10 +90,10 @@ export class DiscordService
   }
 
   @OnEvent('music.stopped')
-  private updateRichPresenceStop() {
+  async updateRichPresenceStop() {
     if (!this.isReady) return;
 
-    this.client.setActivity({
+    await this.client.setActivity({
       details: 'Not listening',
       largeImageKey: 'roon-main',
       largeImageText: 'Idling in Roon',

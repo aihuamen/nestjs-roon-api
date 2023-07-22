@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DiscordService } from './discord.service';
+import { DiscordService } from './discord.service.js';
 
 @Module({
   imports: [ConfigModule],

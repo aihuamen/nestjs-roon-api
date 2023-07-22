@@ -22,17 +22,17 @@ import RoonApiTransport, {
   Zone,
 } from 'node-roon-api-transport';
 import { promisify } from 'util';
-import { IMAGE_OPTION_DEFAULT, ROON_CONFIG } from '../roon.constant';
+import { IMAGE_OPTION_DEFAULT, ROON_CONFIG } from '../roon.constant.js';
 import {
   CurrentSong,
   ImageResult,
   PlayerSetting,
   RoonModuleConfig,
   SettingConfig,
-} from '../roon.interface';
-import { AnyFunction } from '../../shared/interfaces';
-import { PromiseDefer } from '../../shared/utils/PromiseDefer';
-import { FileService } from '../../file/file.service';
+} from '../roon.interface.js';
+import { AnyFunction } from '../../shared/interfaces/index.js';
+import { PromiseDefer } from '../../shared/utils/PromiseDefer.js';
+import { FileService } from '../../file/file.service.js';
 
 @Injectable()
 export class RoonService implements OnApplicationBootstrap {
@@ -96,7 +96,7 @@ export class RoonService implements OnApplicationBootstrap {
     this.statusService.set_status(status, false);
 
   async play(): Promise<void> {
-    if (this.currentSong?.status === 'playing') return Promise.resolve();
+    if (this.currentSong?.status === 'playing') return;
     await this.promisifyTransportMethod(
       this.transportService?.control,
       this.currentOutput!,
@@ -106,7 +106,7 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async pause(): Promise<void> {
-    if (this.currentSong?.status === 'paused') return Promise.resolve();
+    if (this.currentSong?.status === 'paused') return;
     await this.promisifyTransportMethod(
       this.transportService?.control,
       this.currentOutput!,
@@ -256,7 +256,7 @@ export class RoonService implements OnApplicationBootstrap {
     return new Promise((resolve, reject) => {
       if (!this.imageService)
         return reject('Image service has not initiated yet!');
-      this.imageService!.get_image(image_key, options, (err, type, image) => {
+      this.imageService.get_image(image_key, options, (err, type, image) => {
         if (err) {
           return reject(err);
         }
@@ -296,7 +296,7 @@ export class RoonService implements OnApplicationBootstrap {
           ),
         );
         console.log(chalk.yellow(JSON.stringify(data, null, 2)));
-        this.onTransportChanged(cmd, data);
+        return this.onTransportChanged(cmd, data);
       });
     }
   }
@@ -335,10 +335,11 @@ export class RoonService implements OnApplicationBootstrap {
     }
   }
 
-  private onTransportChanged(cmd: string, data: RoonData): void {
+  private async onTransportChanged(cmd: string, data: RoonData) {
     if (cmd === 'Subscribed') {
       this.zones = data.zones;
-      const { now_playing } = this.currentZone!;
+      if (!this.currentZone) return;
+      const { now_playing } = this.currentZone;
       this.setCurrentSongFromMusicStatus(now_playing);
       this.updatePlayerSetting();
     } else if (cmd === 'Changed' && data.zones_changed) {
@@ -349,7 +350,7 @@ export class RoonService implements OnApplicationBootstrap {
       if (this.promiseDefer) {
         this.promiseDefer.resolve();
       }
-      this.cacheImage();
+      await this.cacheImage();
     } else if (
       cmd === 'Changed' &&
       data.zones_seek_changed &&
@@ -394,10 +395,10 @@ export class RoonService implements OnApplicationBootstrap {
     this.eventEmitter.emit(`music.${state}`, this.currentSong);
   }
 
-  private promisifyTransportMethod<
-    Args extends any[],
-    Returned extends unknown,
-  >(fn?: AnyFunction<Args, Returned>, ...args: Args): Promise<void> {
+  private promisifyTransportMethod<Args extends any[]>(
+    fn: AnyFunction<Args> | undefined,
+    ...args: Args
+  ): Promise<void> {
     if (!fn) {
       return Promise.reject(
         'This method is undefined or transport service has not initiated yet!',

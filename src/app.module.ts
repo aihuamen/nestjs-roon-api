@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { RoonModule } from './roon/roon.module';
-import { DiscordModule } from './discord/discord.module';
-import { FileModule } from './file/file.module';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { RoonModule } from './roon/roon.module.js';
+import { DiscordModule } from './discord/discord.module.js';
+import { FileModule } from './file/file.module.js';
 
 @Module({
   imports: [

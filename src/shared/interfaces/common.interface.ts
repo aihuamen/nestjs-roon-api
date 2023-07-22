@@ -1,3 +1,1 @@
-export type AnyFunction<Args extends any[], Returned extends unknown> = (
-  ...args: Args
-) => Returned | undefined;
+export type AnyFunction<Args extends any[]> = (...args: Args) => unknown;

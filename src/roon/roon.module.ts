@@ -1,10 +1,10 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { RoonService } from './providers/roon.service';
-import { RoonController } from './roon.controller';
-import { RoonGateway } from './providers/roon.gateway';
-import { RoonModuleConfig } from './roon.interface';
-import { ROON_CONFIG } from './roon.constant';
-import { FileModule } from 'src/file/file.module';
+import { RoonService } from './providers/roon.service.js';
+import { RoonController } from './roon.controller.js';
+import { RoonGateway } from './providers/roon.gateway.js';
+import { RoonModuleConfig } from './roon.interface.js';
+import { ROON_CONFIG } from './roon.constant.js';
+import { FileModule } from '../file/file.module.js';
 
 @Module({
   imports: [FileModule],

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { writeFile, readFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
-import { DEFAULT_IMAGE_TYPE, IMAGE_PATH } from './file.constant';
+import { DEFAULT_IMAGE_TYPE, IMAGE_PATH } from './file.constant.js';
 
 @Injectable()
 export class FileService {

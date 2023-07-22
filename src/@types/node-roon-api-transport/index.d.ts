@@ -149,7 +149,9 @@ declare module 'node-roon-api-transport' {
       cb?: ResultCallBack,
     ): void;
 
-    subscribe_zones(cb: (cmd: string, data: RoonData) => void): void;
+    subscribe_zones(
+      cb: (cmd: string, data: RoonData) => void | Promise<void>,
+    ): void;
   }
 
   export type HowMute = 'mute' | 'unmute';
