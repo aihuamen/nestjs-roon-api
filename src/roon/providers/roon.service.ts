@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/unbound-method */
 import {
   BadRequestException,
   Inject,
@@ -180,7 +180,7 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   async toggleMute(): Promise<void> {
-    if (!('mute' in this.playerSetting)) {
+    if (this.playerSetting.mute === undefined) {
       throw new BadRequestException('This output is on exclusive mode');
     }
     await this.promisifyTransportMethod(

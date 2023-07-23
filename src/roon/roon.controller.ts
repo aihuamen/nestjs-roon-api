@@ -34,7 +34,7 @@ export class RoonController {
   }
 
   @Put('playpause')
-  async toggleMusic() {
+  async togglePlayPauseMusic() {
     await this.roonService.togglePlayPause();
     return 'play/pause';
   }
@@ -49,6 +49,12 @@ export class RoonController {
   async unmuteMusic() {
     await this.roonService.unmute();
     return 'unmute';
+  }
+
+  @Put('toggleMute')
+  async toggleMuteMusic() {
+    await this.roonService.toggleMute();
+    return 'mute/unmute';
   }
 
   @Put('shuffle')

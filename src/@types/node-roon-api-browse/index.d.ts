@@ -40,7 +40,10 @@ declare module 'node-roon-api-browse' {
      *</pre>
      * @param {RoonApiBrowse~browseresultcallback} [cb] - Called on success or error
      */
-    browse(opts: BrowseOption | {}, cb: BrowseResultCallback): void;
+    browse(
+      opts: BrowseOption | Record<string, never>,
+      cb: BrowseResultCallback,
+    ): void;
 
     /**
      * Retrieve items from a browse level. Item loading is handled separately from browsing. This allows clients to load very large lists in very small increments if needed.
@@ -54,7 +57,10 @@ declare module 'node-roon-api-browse' {
      * @param {string}  [opts.multi_session_key]  If your application browses several instances of the same hierarchy at the same time, you can populate this to distinguish between them. Most applications will omit this field.
      * @param {RoonApiBrowse~loadresultcallback} [cb] - Called on success or error
      */
-    load(opts: LoadOption | {}, cb: LoadResultCallback): void;
+    load(
+      opts: LoadOption | Record<string, never>,
+      cb: LoadResultCallback,
+    ): void;
   }
 
   export interface BrowseOption {

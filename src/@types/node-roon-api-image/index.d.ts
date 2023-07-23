@@ -11,7 +11,7 @@ declare module 'node-roon-api-image' {
    */
   export default class RoonApiImage {
     private static services: [{ name: string }];
-    constructor(private core: Core);
+    constructor(core: Core);
 
     get_image(image_key: string, cb: ImageResultCallback): void;
     get_image(

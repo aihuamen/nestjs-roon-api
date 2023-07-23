@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { AppModule } from '../src/app.module.js';
 
 describe('Roon Feature', () => {
   let app: INestApplication;
@@ -15,6 +15,10 @@ describe('Roon Feature', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
     agent = request.agent(app.getHttpServer());
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it('should return music status correctly', async () => {
@@ -31,9 +35,5 @@ describe('Roon Feature', () => {
 
     expect(response.ok).toBe(true);
     expect(response.body.status).toBe('paused');
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 });

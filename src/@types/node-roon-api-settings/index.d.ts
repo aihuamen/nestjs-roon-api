@@ -26,9 +26,7 @@ declare module 'node-roon-api-settings' {
     has_error: boolean;
   }
 
-  export interface SettingValues {
-    [k: string]: any;
-  }
+  export type SettingValues = Record<string, any>;
 
   export interface LabelLayout {
     type: 'label';

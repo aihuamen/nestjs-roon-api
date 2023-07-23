@@ -10,7 +10,7 @@ export class FileService {
     return readFile(this.getImagePath(id, type));
   }
 
-  async checkImageExist(id: string, type?: string) {
+  checkImageExist(id: string, type?: string) {
     return existsSync(this.getImagePath(id, type));
   }
 
