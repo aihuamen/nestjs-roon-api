@@ -62,7 +62,7 @@ declare module 'node-roon-api' {
      * @param {string} key
      * @return {object} value
      */
-    load_config<T extends Record<string, any>>(key: string): ?T;
+    load_config<T extends Record<string, any>>(key: string): T | null;
   }
 
   export interface MooMessage {

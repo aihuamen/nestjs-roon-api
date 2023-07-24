@@ -19,7 +19,8 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "lib": ["ES2019"]
+    "importHelpers": true,
+    "verbatimModuleSyntax": true
   },
   "exclude": ["config.json"]
 }

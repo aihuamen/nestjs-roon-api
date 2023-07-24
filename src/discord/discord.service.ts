@@ -1,12 +1,12 @@
 import {
   Injectable,
-  OnApplicationBootstrap,
-  OnApplicationShutdown,
+  type OnApplicationBootstrap,
+  type OnApplicationShutdown,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Client } from 'discord-rpc';
-import { CurrentSong } from '../roon/roon.interface.js';
+import { type CurrentSong } from '../roon/roon.interface.js';
 import { DISCORD_CLIENT_ID } from './discord.constant.js';
 
 @Injectable()
@@ -22,16 +22,21 @@ export class DiscordService
 
   async onApplicationBootstrap() {
     const clientId = this.configService.get<string>(DISCORD_CLIENT_ID) ?? '';
-    this.client = await this.client.login({ clientId });
-    this.isReady = true;
-    await this.client.setActivity({
-      state: 'Chillyyy',
-      details: 'Yee',
-      instance: false,
-    });
+    try {
+      this.client = await this.client.login({ clientId });
+      this.isReady = true;
+      await this.client.setActivity({
+        state: 'Chillyyy',
+        details: 'Yee',
+        instance: false,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async onApplicationShutdown() {
+    if (!this.isReady) return;
     await this.client.clearActivity();
     await this.client.destroy();
   }

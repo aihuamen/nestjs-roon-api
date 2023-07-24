@@ -3,34 +3,37 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  OnApplicationBootstrap,
+  type OnApplicationBootstrap,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import chalk from 'chalk';
-import RoonApi, { Core, MooMessage } from 'node-roon-api';
-import RoonApiBrowse, { BrowseResult, LoadResult } from 'node-roon-api-browse';
-import RoonApiImage, { ImageOption } from 'node-roon-api-image';
+import RoonApi, { type Core, type MooMessage } from 'node-roon-api';
+import RoonApiBrowse, {
+  type BrowseResult,
+  type LoadResult,
+} from 'node-roon-api-browse';
+import RoonApiImage, { type ImageOption } from 'node-roon-api-image';
 import RoonApiSettings, {
-  GetSettingCallback,
-  RoonSetting,
-  SettingValues,
+  type GetSettingCallback,
+  type RoonSetting,
+  type SettingValues,
 } from 'node-roon-api-settings';
 import RoonApiStatus from 'node-roon-api-status';
 import RoonApiTransport, {
-  MusicStatus,
-  RoonData,
-  Zone,
+  type MusicStatus,
+  type RoonData,
+  type Zone,
 } from 'node-roon-api-transport';
 import { promisify } from 'util';
 import { IMAGE_OPTION_DEFAULT, ROON_CONFIG } from '../roon.constant.js';
 import {
-  CurrentSong,
-  ImageResult,
-  PlayerSetting,
-  RoonModuleConfig,
-  SettingConfig,
+  type CurrentSong,
+  type ImageResult,
+  type PlayerSetting,
+  type RoonModuleConfig,
+  type SettingConfig,
 } from '../roon.interface.js';
-import { AnyFunction } from '../../shared/interfaces/index.js';
+import { type AnyFunction } from '../../shared/interfaces/index.js';
 import { PromiseDefer } from '../../shared/utils/PromiseDefer.js';
 import { FileService } from '../../file/file.service.js';
 
@@ -426,9 +429,9 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   private async cacheImage() {
-    const imageKey = this.currentSong!.image_key;
+    const imageKey = this.currentSong?.image_key;
     if (!imageKey) return;
-    const isExist = await this.fileService.checkImageExist(imageKey);
+    const isExist = this.fileService.checkImageExist(imageKey);
     if (isExist) return;
 
     const { type, image } = await this.getImage(imageKey);

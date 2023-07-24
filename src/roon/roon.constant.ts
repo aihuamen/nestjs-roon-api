@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { GatewayMetadata } from '@nestjs/websockets';
-import { ImageOption } from 'node-roon-api-image';
+import { type GatewayMetadata } from '@nestjs/websockets';
+import { type ImageOption } from 'node-roon-api-image';
 
 export const IMAGE_OPTION_DEFAULT: ImageOption = {
   scale: 'fit',

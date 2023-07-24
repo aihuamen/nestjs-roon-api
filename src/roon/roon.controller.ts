@@ -12,9 +12,9 @@ import {
   StreamableFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { type Response } from 'express';
 import { SongDto } from './roon.dto.js';
-import { ImageResult } from './roon.interface.js';
+import { type ImageResult } from './roon.interface.js';
 import { RoonService } from './providers/roon.service.js';
 
 @Controller('roon')

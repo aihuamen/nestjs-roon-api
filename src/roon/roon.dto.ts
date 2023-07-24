@@ -1,6 +1,6 @@
 import { Exclude, Transform } from 'class-transformer';
-import { ZoneState } from 'node-roon-api-transport';
-import { CurrentSong } from './roon.interface.js';
+import { type ZoneState } from 'node-roon-api-transport';
+import { type CurrentSong } from './roon.interface.js';
 
 export class SongDto {
   title!: string;

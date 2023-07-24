@@ -1,5 +1,5 @@
 import {
-  OnGatewayConnection,
+  type OnGatewayConnection,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -8,7 +8,7 @@ import { plainToClass } from 'class-transformer';
 import type { Server, Socket } from 'socket.io';
 import { SongDto } from '../roon.dto.js';
 import { GATEWAY_METADATA } from '../roon.constant.js';
-import { CurrentSong } from '../roon.interface.js';
+import { type CurrentSong } from '../roon.interface.js';
 import { RoonService } from './roon.service.js';
 
 @WebSocketGateway(GATEWAY_METADATA)
