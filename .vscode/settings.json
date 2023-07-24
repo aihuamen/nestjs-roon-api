@@ -15,5 +15,6 @@
     "editor.formatOnPaste": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.format.semicolons": "insert"
+  "typescript.format.semicolons": "insert",
+  "eslint.experimental.useFlatConfig": true
 }
