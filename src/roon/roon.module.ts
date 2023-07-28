@@ -8,6 +8,7 @@ import { FileModule } from '../file/file.module.js';
 
 @Module({
   imports: [FileModule],
+  exports: [RoonService],
 })
 export class RoonModule {
   static register(config: RoonModuleConfig): DynamicModule {

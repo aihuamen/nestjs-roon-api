@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  type MiddlewareConsumer,
+  type NestModule,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller.js';
@@ -6,6 +10,8 @@ import { AppService } from './app.service.js';
 import { RoonModule } from './roon/roon.module.js';
 import { DiscordModule } from './discord/discord.module.js';
 import { FileModule } from './file/file.module.js';
+import { RoonReadyMiddleware } from './roon/middlewares/roon-ready.middleware.js';
+import { RoonController } from './roon/roon.controller.js';
 
 @Module({
   imports: [
@@ -28,4 +34,8 @@ import { FileModule } from './file/file.module.js';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RoonReadyMiddleware).forRoutes(RoonController);
+  }
+}

@@ -40,7 +40,7 @@ import { FileService } from '../../file/file.service.js';
 @Injectable()
 export class RoonService implements OnApplicationBootstrap {
   private roon: RoonApi;
-  private core!: Core;
+  private core?: Core;
   private statusService: RoonApiStatus;
   private transportService?: RoonApiTransport;
   private browseService?: RoonApiBrowse;
@@ -64,6 +64,10 @@ export class RoonService implements OnApplicationBootstrap {
     return this.zones
       ?.flatMap((z) => z.outputs)
       .find((o) => o.output_id === this.setting!.zone.output_id);
+  }
+
+  public get isReady() {
+    return !!this.core;
   }
 
   constructor(
@@ -295,7 +299,9 @@ export class RoonService implements OnApplicationBootstrap {
         console.log(
           chalk.green(
             'My log:',
-            `${this.core.core_id} ${this.core.display_name} ${this.core.display_version} - ${cmd}`,
+            `${this.core!.core_id} ${this.core!.display_name} ${
+              this.core!.display_version
+            } - ${cmd}`,
           ),
         );
         console.log(chalk.yellow(JSON.stringify(data, null, 2)));
