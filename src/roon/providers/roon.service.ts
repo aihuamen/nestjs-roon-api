@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  Logger,
   type OnApplicationBootstrap,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -53,6 +54,8 @@ export class RoonService implements OnApplicationBootstrap {
 
   public currentSong?: CurrentSong;
   public playerSetting!: PlayerSetting;
+
+  private readonly logger = new Logger(RoonService.name);
 
   public get currentZone() {
     if (!this.setting) return undefined;
@@ -296,7 +299,7 @@ export class RoonService implements OnApplicationBootstrap {
 
     if (this.transportService) {
       this.transportService.subscribe_zones((cmd, data) => {
-        console.log(
+        this.logger.log(
           chalk.green(
             'My log:',
             `${this.core!.core_id} ${this.core!.display_name} ${
@@ -311,7 +314,7 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   private handleCoreUnpaired(core: Core): void {
-    console.log(
+    this.logger.log(
       core.core_id,
       core.display_name,
       core.display_version,
@@ -321,7 +324,7 @@ export class RoonService implements OnApplicationBootstrap {
   }
 
   private handleGetSetting(cb: GetSettingCallback): void {
-    console.log('Current settings:', this.setting);
+    this.logger.log('Current settings:', this.setting);
     cb(this.makeSettingLayout(this.setting ?? {}));
   }
 
@@ -338,7 +341,7 @@ export class RoonService implements OnApplicationBootstrap {
 
     if (!isdryrun && !l.has_error) {
       this.setting = l.values as SettingConfig;
-      console.log('New settings:', this.setting);
+      this.logger.log('New settings:', this.setting);
       this.settingService.update_settings(l);
       this.roon.save_config('settings', this.setting);
     }

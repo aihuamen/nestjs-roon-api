@@ -9,10 +9,9 @@ import {
   Put,
   Query,
   Res,
-  StreamableFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { type Response } from 'express';
+import { type FastifyReply } from 'fastify';
 import { SongDto } from './roon.dto.js';
 import { type ImageResult } from './roon.interface.js';
 import { RoonService } from './providers/roon.service.js';
@@ -97,7 +96,7 @@ export class RoonController {
   }
 
   @Get('/current/image')
-  async getCurrentImage(@Res() res: Response) {
+  async getCurrentImage(@Res() res: FastifyReply) {
     if (!this.roonService.currentSong) {
       throw new BadRequestException('No current song available');
     }
@@ -107,8 +106,7 @@ export class RoonController {
     const { type, image } = await this.roonService.getImage(
       this.roonService.currentSong.image_key,
     );
-    res.contentType(type);
-    res.end(image, 'binary');
+    await res.type(type).send(image);
   }
 
   @Put('browse/:key')
@@ -120,7 +118,7 @@ export class RoonController {
   async getImage(
     @Param('key') key: string,
     @Query('size') size: string,
-    @Res() res: Response,
+    @Res() res: FastifyReply,
   ) {
     let result: ImageResult;
     if (size) {
@@ -133,9 +131,7 @@ export class RoonController {
       result = await this.roonService.getImage(key);
     }
     const { type, image } = result;
-    res.contentType(type);
-    return new StreamableFile(image);
-    // res.end(image, 'binary')
+    await res.type(type).send(image);
   }
 
   @Get('setting')

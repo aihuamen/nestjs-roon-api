@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   type OnApplicationBootstrap,
   type OnApplicationShutdown,
 } from '@nestjs/common';
@@ -16,6 +17,8 @@ export class DiscordService
   private client: Client;
   private isReady = false;
 
+  private readonly logger = new Logger(DiscordService.name);
+
   constructor(private readonly configService: ConfigService) {
     this.client = new Client({ transport: 'ipc' });
   }
@@ -31,7 +34,7 @@ export class DiscordService
         instance: false,
       });
     } catch (error) {
-      console.log(error);
+      this.logger.log(error);
     }
   }
 
